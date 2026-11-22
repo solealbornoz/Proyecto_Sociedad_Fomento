@@ -154,9 +154,21 @@ const handler = async (req, res) => {
       }
       return send(res, 404, {error:'Recurso no encontrado.'});
     }
-    const files = {'/':'index.html','/index.html':'index.html','/login.html':'login.html','/dashboard.html':'dashboard.html','/styles.css':'styles.css','/barrio.css':'barrio.css','/script.js':'script.js'};
-    const file = files[url.pathname]; if (!file || req.method !== 'GET') { res.writeHead(404); return res.end('No encontrado'); }
-    res.writeHead(200, {'Content-Type': file.endsWith('.html') ? 'text/html; charset=utf-8' : file.endsWith('.css') ? 'text/css; charset=utf-8' : 'text/javascript; charset=utf-8'}); fs.createReadStream(path.join(__dirname, file)).pipe(res);
+    // Rutas literales permiten que Vercel incluya los archivos en el paquete.
+    const files = {
+      '/': {content: () => fs.readFileSync(path.join(__dirname, 'index.html')), type: 'text/html'},
+      '/index.html': {content: () => fs.readFileSync(path.join(__dirname, 'index.html')), type: 'text/html'},
+      '/login.html': {content: () => fs.readFileSync(path.join(__dirname, 'login.html')), type: 'text/html'},
+      '/dashboard.html': {content: () => fs.readFileSync(path.join(__dirname, 'dashboard.html')), type: 'text/html'},
+      '/styles.css': {content: () => fs.readFileSync(path.join(__dirname, 'styles.css')), type: 'text/css'},
+      '/barrio.css': {content: () => fs.readFileSync(path.join(__dirname, 'barrio.css')), type: 'text/css'},
+      '/script.js': {content: () => fs.readFileSync(path.join(__dirname, 'script.js')), type: 'text/javascript'}
+    };
+    const file = files[url.pathname];
+    if (!file || !['GET', 'HEAD'].includes(req.method)) { res.writeHead(404); return res.end('No encontrado'); }
+    const content = file.content();
+    res.writeHead(200, {'Content-Type': `${file.type}; charset=utf-8`, 'Content-Length': content.length});
+    res.end(req.method === 'HEAD' ? undefined : content);
   } catch (error) { console.error(error); send(res, 400, {error:'No se pudo procesar la solicitud.'}); }
 };
 module.exports = handler;
