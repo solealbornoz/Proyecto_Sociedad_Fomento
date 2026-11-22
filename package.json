@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "description": "Actividades e inscripciones de una sociedad de fomento",
-  "engines": { "node": ">=22.13" },
-  "scripts": { "start": "node server.js" }
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "migrar:turso": "node --env-file-if-exists=.env scripts/migrar-a-turso.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0"
+  }
 }
