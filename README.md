@@ -39,3 +39,15 @@ Si la conexión falla, revisar los logs de la función y confirmar que ambas var
 ## Entrega
 
 Completar `GrupoX.txt` con el número de grupo, integrantes, enlace del repositorio y URL pública; subirlo al Campus.
+
+## Organización del proyecto
+
+- `frontend/`: páginas HTML, estilos y JavaScript que se ejecuta en el navegador.
+- `backend/`: servidor, API, conexión a Turso y catálogo de actividades.
+- `api/`: punto de entrada de las funciones de Vercel.
+- `scripts/`: migración de SQLite a Turso.
+- `server.js`: punto de entrada del servidor para Node.js y Vercel.
+- `data/`: base SQLite local de respaldo, excluida de Git.
+- `.env`: configuración privada de Turso, excluida de Git.
+
+Los comandos se ejecutan desde la raíz del proyecto, no desde `frontend` ni `backend`.
